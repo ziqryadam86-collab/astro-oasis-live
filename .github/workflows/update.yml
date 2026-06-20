@@ -1,0 +1,42 @@
+name: Auto Update Oasis M3U8
+
+on:
+  schedule:
+    # Berjalan automatik setiap 5 minit
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # Butang untuk awak run manual kalau tak sabar nak tunggu 5 minit
+
+jobs:
+  update-link:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests urllib3
+
+    - name: Jalankan Skrip Pencari M3U8
+      run: python update.py
+
+    - name: Commit dan Push Fail oasis.m3u8 Baru
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # Semak jika ada perubahan pada fail oasis.m3u8
+        git add oasis.m3u8
+        if git diff --staged --quiet; then
+          echo "Tiada perubahan token. Fail sama."
+        else
+          git commit -m "Auto-update Oasis Token M3U8"
+          git push
+        fi
+        
