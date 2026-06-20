@@ -4,7 +4,7 @@ on:
   schedule:
     # Berjalan automatik setiap 5 minit
     - cron: '*/5 * * * *'
-  workflow_dispatch: # Butang untuk awak run manual kalau tak sabar nak tunggu 5 minit
+  workflow_dispatch: # Butang untuk run manual kalau tak sabar nak tunggu 5 minit
 
 jobs:
   update-link:
@@ -21,7 +21,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests urllib3
+        pip install cloudscraper
 
     - name: Jalankan Skrip Pencari M3U8
       run: python update.py
